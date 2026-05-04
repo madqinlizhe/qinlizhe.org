@@ -293,8 +293,7 @@ function renderAbout() {
           <h1>关于这个站点</h1>
         </header>
         <div class="article-body">
-          <p>这里是亲历者 Qinlizhe 的自留地，用来存放 Reading Notes、Mad Studies 中文资源、翻译、评论与公共讨论文本。</p>
-          <p>网站尽量保持轻、静、可迁移。公众号不方便承载的长文本，可以在这里留下来。</p>
+          <p>我们是一些心有委屈与不甘、却仍对精神健康事业抱有热情的亲历者。“亲历者”不仅意味着亲身经历，也意味着一手的见证。这里是一片自留地，用来保存笔记、评论与疯狂研究 Mad Studies 相关资源，为中文读者留下不被收编的边缘声音。</p>
         </div>
       </article>
     </main>`
