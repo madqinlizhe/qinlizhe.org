@@ -134,7 +134,7 @@ function extractMeta(markdown, filename) {
     author: authorLine?.replace("作者/公众号：", "").trim() || "亲历者Qinlizhe",
     date: dateLine?.replace("发布时间：", "").trim() || "",
     source: sourceLine?.replace("原文链接：", "").trim() || "",
-    description: firstParagraph?.replace(/\*\*/g, "").trim() || "Reading Notes / Mad Studies 中文资源",
+    description: firstParagraph?.replace(/\*\*/g, "").trim() || "qinlizhe research · mad studies in China",
     slug: slugify(filename)
   };
 }
@@ -220,7 +220,7 @@ function layout({ title, description, content, bodyClass = "" }) {
   </header>
   ${content}
   <footer class="site-footer">
-    <p>Qinlizhe Mad Studies Collective · Reading Notes / Mad Studies 中文资源</p>
+    <p>qinlizhe research · mad studies in China</p>
   </footer>
 </body>
 </html>`;
@@ -239,11 +239,11 @@ function renderIndex(posts) {
 
   return layout({
     title: "亲历者 Qinlizhe",
-    description: "Reading Notes / Mad Studies 中文资源",
+    description: "qinlizhe research · mad studies in China",
     bodyClass: "home",
     content: `<main>
       <section class="intro">
-        <p class="eyebrow">Reading Notes / Mad Studies 中文资源</p>
+        <p class="eyebrow">qinlizhe research · mad studies in China</p>
         <h1>亲历者自己的书写、翻译与资料存放处。</h1>
         <p>这里是 qinlizhe.org 的自留地。以文章为主，收纳精神健康、疯狂研究、亲历者知识与本土行动相关的文本。</p>
       </section>
