@@ -276,8 +276,8 @@ function renderIndex(posts) {
     content: `<main>
       <section class="intro">
         <p class="eyebrow">qinlizhe research · mad studies in China</p>
-        <h1>亲历者自己的书写、翻译与资料存放处。</h1>
-        <p>这里是 qinlizhe.org 的自留地。以文章为主，收纳精神健康、疯狂研究、亲历者知识与本土行动相关的文本。</p>
+        <h1>亲历者自己的书写、见证与资料存放处。</h1>
+        <p>亲历者的自留地。收纳精神健康、疯狂研究、亲历者知识与本土行动相关文本。</p>
       </section>
       <nav class="category-nav" aria-label="栏目导航">
         ${categories.map((category) => `<a href="#${slugify(category.name)}">${escapeHtml(category.name)}</a>`).join("")}
