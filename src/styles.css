@@ -1,12 +1,13 @@
 :root {
   color-scheme: light;
-  --paper: #fbfaf6;
-  --ink: #221f1c;
-  --muted: #6e665d;
-  --line: #ded7cc;
-  --accent: #8d2f23;
-  --accent-soft: #f1ded8;
-  --blue: #24516a;
+  --paper: #f7fbff;
+  --ink: #102033;
+  --muted: #5d6f82;
+  --line: #c9d9e8;
+  --accent: #b84f16;
+  --accent-soft: #ffe7d5;
+  --blue: #0d4f8b;
+  --blue-soft: #e6f1fb;
   --max: 760px;
 }
 
@@ -24,8 +25,8 @@ body {
 }
 
 a {
-  color: inherit;
-  text-decoration-color: color-mix(in srgb, var(--accent), transparent 45%);
+  color: var(--blue);
+  text-decoration-color: color-mix(in srgb, var(--accent), transparent 38%);
   text-underline-offset: 0.2em;
 }
 
@@ -49,6 +50,7 @@ a:hover {
 }
 
 .site-name {
+  color: var(--ink);
   font-weight: 700;
   text-decoration: none;
   letter-spacing: 0;
@@ -94,6 +96,10 @@ main {
   letter-spacing: 0;
 }
 
+.intro h1 {
+  color: #0a3a68;
+}
+
 .intro p:last-child {
   max-width: 650px;
   margin: 22px 0 0;
@@ -118,8 +124,13 @@ main {
   text-decoration: none;
 }
 
+.post-list-item a:hover h2 {
+  color: var(--accent);
+}
+
 .post-list-item h2 {
   margin: 6px 0 8px;
+  color: var(--blue);
   font-size: 28px;
   line-height: 1.28;
   letter-spacing: 0;
@@ -197,8 +208,8 @@ main {
   margin: 28px 0;
   padding: 18px 22px;
   border-left: 4px solid var(--blue);
-  background: #f2f5f4;
-  color: #303a3d;
+  background: var(--blue-soft);
+  color: #17324b;
 }
 
 .article-body hr {
@@ -208,6 +219,7 @@ main {
 }
 
 .article-body strong {
+  color: #8d3d12;
   font-weight: 800;
 }
 
