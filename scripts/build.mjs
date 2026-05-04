@@ -242,8 +242,9 @@ function renderIndex(posts) {
 }
 
 function renderPost(post) {
+  const sourceLabel = post.source.includes("doi.org") ? "原文 DOI" : "公众号原文";
   const source = post.source
-    ? `<p class="source"><a href="${escapeHtml(post.source)}" rel="noopener noreferrer">公众号原文</a></p>`
+    ? `<p class="source"><a href="${escapeHtml(post.source)}" rel="noopener noreferrer">${sourceLabel}</a></p>`
     : "";
 
   return layout({
