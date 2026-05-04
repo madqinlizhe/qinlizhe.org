@@ -8,6 +8,20 @@ const publicDir = path.join(root, "public");
 const styleSource = path.join(root, "src", "styles.css");
 const contentDir = path.join(root, "content", "posts");
 const watch = process.argv.includes("--watch");
+const categories = [
+  {
+    name: "嬉笑怒骂",
+    description: "批评国内外精神健康话语、机构实践与知识生产。"
+  },
+  {
+    name: "旁门左道",
+    description: "亲历者研究、疯狂研究相关文献与实践速递。"
+  },
+  {
+    name: "疯言疯语",
+    description: "随笔、感想、短札，以及一些未完成的想法。"
+  }
+];
 
 function escapeHtml(value = "") {
   return value
@@ -124,6 +138,7 @@ function extractMeta(markdown, filename) {
   const authorLine = lines.find((line) => line.startsWith("作者/公众号："));
   const dateLine = lines.find((line) => line.startsWith("发布时间："));
   const sourceLine = lines.find((line) => line.startsWith("原文链接："));
+  const categoryLine = lines.find((line) => line.startsWith("栏目："));
   const firstParagraph = lines.find((line) => {
     const trimmed = line.trim();
     return trimmed && !trimmed.startsWith("#") && !trimmed.startsWith("!") && !trimmed.includes("：");
@@ -134,6 +149,7 @@ function extractMeta(markdown, filename) {
     author: authorLine?.replace("作者/公众号：", "").trim() || "亲历者Qinlizhe",
     date: dateLine?.replace("发布时间：", "").trim() || "",
     source: sourceLine?.replace("原文链接：", "").trim() || "",
+    category: categoryLine?.replace("栏目：", "").trim() || "疯言疯语",
     description: firstParagraph?.replace(/\*\*/g, "").trim() || "qinlizhe research · mad studies in China",
     slug: slugify(filename)
   };
@@ -149,6 +165,7 @@ function stripPostHeader(markdown) {
     (lines[index].startsWith("作者/公众号：") ||
       lines[index].startsWith("发布时间：") ||
       lines[index].startsWith("原文链接：") ||
+      lines[index].startsWith("栏目：") ||
       lines[index].trim() === "")
   ) {
     index += 1;
@@ -227,14 +244,29 @@ function layout({ title, description, content, bodyClass = "" }) {
 }
 
 function renderIndex(posts) {
-  const postCards = posts
-    .map((post) => `<article class="post-list-item">
-      <a href="/posts/${post.slug}.html">
-        <span class="post-date">${escapeHtml(post.date)}</span>
-        <h2>${escapeHtml(post.title)}</h2>
-        <p>${escapeHtml(post.description)}</p>
-      </a>
-    </article>`)
+  const categorySections = categories
+    .map((category) => {
+      const categoryPosts = posts.filter((post) => post.category === category.name);
+      const postCards = categoryPosts
+        .map((post) => `<article class="post-list-item">
+          <a href="/posts/${post.slug}.html">
+            <span class="post-date">${escapeHtml(post.date)}</span>
+            <h3>${escapeHtml(post.title)}</h3>
+            <p>${escapeHtml(post.description)}</p>
+          </a>
+        </article>`)
+        .join("\n");
+
+      return `<section class="category-section" id="${slugify(category.name)}">
+        <header class="category-header">
+          <h2>${escapeHtml(category.name)}</h2>
+          <p>${escapeHtml(category.description)}</p>
+        </header>
+        <div class="post-list">
+          ${postCards || '<p class="empty-note">文章会放在这里。</p>'}
+        </div>
+      </section>`;
+    })
     .join("\n");
 
   return layout({
@@ -247,9 +279,10 @@ function renderIndex(posts) {
         <h1>亲历者自己的书写、翻译与资料存放处。</h1>
         <p>这里是 qinlizhe.org 的自留地。以文章为主，收纳精神健康、疯狂研究、亲历者知识与本土行动相关的文本。</p>
       </section>
-      <section class="post-list" aria-label="文章列表">
-        ${postCards || "<p>文章会放在这里。</p>"}
-      </section>
+      <nav class="category-nav" aria-label="栏目导航">
+        ${categories.map((category) => `<a href="#${slugify(category.name)}">${escapeHtml(category.name)}</a>`).join("")}
+      </nav>
+      ${categorySections}
     </main>`
   });
 }
@@ -267,7 +300,7 @@ function renderPost(post) {
     content: `<main class="article-shell">
       <article class="article">
         <header class="article-header">
-          <p class="eyebrow">${escapeHtml(post.author)}</p>
+          <p class="eyebrow">${escapeHtml(post.category)} · ${escapeHtml(post.author)}</p>
           <h1>${escapeHtml(post.title)}</h1>
           <div class="article-meta">
             <time>${escapeHtml(post.date)}</time>

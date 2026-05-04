@@ -32,6 +32,15 @@ npm run build
 作者/公众号：亲历者Qinlizhe
 发布时间：2026-05-01
 原文链接：https://example.com
+栏目：旁门左道
+```
+
+可用栏目：
+
+```text
+嬉笑怒骂
+旁门左道
+疯言疯语
 ```
 
 重新运行 `npm run build` 即可生成新的文章页。

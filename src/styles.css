@@ -107,10 +107,64 @@ main {
   font-size: 20px;
 }
 
+.category-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 42px;
+  padding: 0 0 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.category-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: var(--blue);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.category-nav a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.category-section {
+  display: grid;
+  grid-template-columns: minmax(190px, 260px) minmax(0, 1fr);
+  gap: 38px;
+  padding: 0 0 56px;
+}
+
+.category-header {
+  padding-top: 20px;
+}
+
+.category-header h2 {
+  margin: 0 0 10px;
+  color: var(--accent);
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.category-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
 .post-list {
   display: grid;
   gap: 0;
-  padding: 8px 0 80px;
+  padding: 0;
   border-top: 1px solid var(--line);
 }
 
@@ -124,16 +178,22 @@ main {
   text-decoration: none;
 }
 
-.post-list-item a:hover h2 {
+.post-list-item a:hover h2,
+.post-list-item a:hover h3 {
   color: var(--accent);
 }
 
-.post-list-item h2 {
+.post-list-item h2,
+.post-list-item h3 {
   margin: 6px 0 8px;
   color: var(--blue);
   font-size: 28px;
   line-height: 1.28;
   letter-spacing: 0;
+}
+
+.post-list-item h3 {
+  font-size: 24px;
 }
 
 .post-list-item p {
@@ -142,6 +202,13 @@ main {
   color: var(--muted);
   font-size: 16px;
   line-height: 1.7;
+}
+
+.empty-note {
+  margin: 0;
+  padding: 26px 0;
+  color: var(--muted);
+  font-size: 15px;
 }
 
 .post-date,
@@ -258,7 +325,26 @@ main {
     font-size: 18px;
   }
 
-  .post-list-item h2 {
+  .category-nav {
+    margin-bottom: 34px;
+  }
+
+  .category-section {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding-bottom: 44px;
+  }
+
+  .category-header {
+    padding-top: 0;
+  }
+
+  .category-header h2 {
+    font-size: 26px;
+  }
+
+  .post-list-item h2,
+  .post-list-item h3 {
     font-size: 23px;
   }
 
