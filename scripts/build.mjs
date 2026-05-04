@@ -6,6 +6,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
 const publicDir = path.join(root, "public");
 const styleSource = path.join(root, "src", "styles.css");
+const contentDir = path.join(root, "content", "posts");
 const watch = process.argv.includes("--watch");
 
 function escapeHtml(value = "") {
@@ -168,13 +169,25 @@ async function copyPublic() {
 }
 
 async function collectPosts() {
-  const entries = await fs.readdir(root, { withFileTypes: true });
-  const files = entries
+  const rootEntries = await fs.readdir(root, { withFileTypes: true });
+  const rootFiles = rootEntries
     .filter((entry) => {
       const lower = entry.name.toLowerCase();
       return entry.isFile() && entry.name.endsWith(".md") && lower !== "readme.md";
     })
     .map((entry) => path.join(root, entry.name));
+
+  let contentFiles = [];
+  try {
+    const contentEntries = await fs.readdir(contentDir, { withFileTypes: true });
+    contentFiles = contentEntries
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+      .map((entry) => path.join(contentDir, entry.name));
+  } catch {
+    contentFiles = [];
+  }
+
+  const files = [...rootFiles, ...contentFiles];
 
   const posts = [];
   for (const file of files) {

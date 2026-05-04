@@ -17,7 +17,14 @@ python3 -m http.server 4173
 
 ## 添加文章
 
-把 Markdown 文件放在仓库根目录，第一行使用一级标题：
+把 Markdown 文件放在 `inbox/`，然后运行：
+
+```bash
+npm run import
+npm run build
+```
+
+脚本会把文章移到 `content/posts/`。文章第一行建议使用一级标题：
 
 ```markdown
 # 文章标题
