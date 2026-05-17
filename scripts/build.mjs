@@ -139,6 +139,7 @@ function extractMeta(markdown, filename) {
   const dateLine = lines.find((line) => line.startsWith("发布时间："));
   const sourceLine = lines.find((line) => line.startsWith("原文链接："));
   const categoryLine = lines.find((line) => line.startsWith("栏目："));
+  const descriptionLine = lines.find((line) => line.startsWith("摘要："));
   const firstParagraph = lines.find((line) => {
     const trimmed = line.trim();
     return trimmed && !trimmed.startsWith("#") && !trimmed.startsWith("!") && !trimmed.includes("：");
@@ -150,7 +151,7 @@ function extractMeta(markdown, filename) {
     date: dateLine?.replace("发布时间：", "").trim() || "",
     source: sourceLine?.replace("原文链接：", "").trim() || "",
     category: categoryLine?.replace("栏目：", "").trim() || "疯言疯语",
-    description: firstParagraph?.replace(/\*\*/g, "").trim() || "qinlizhe research · mad studies in China",
+    description: descriptionLine?.replace("摘要：", "").trim() || firstParagraph?.replace(/\*\*/g, "").trim() || "qinlizhe research · mad studies in China",
     slug: slugify(filename)
   };
 }
@@ -166,6 +167,7 @@ function stripPostHeader(markdown) {
       lines[index].startsWith("发布时间：") ||
       lines[index].startsWith("原文链接：") ||
       lines[index].startsWith("栏目：") ||
+      lines[index].startsWith("摘要：") ||
       lines[index].trim() === "")
   ) {
     index += 1;
