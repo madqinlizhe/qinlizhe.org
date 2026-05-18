@@ -147,7 +147,7 @@ function extractMeta(markdown, filename) {
 
   return {
     title: titleLine?.replace(/^#\s+/, "").trim() || path.basename(filename, ".md"),
-    author: authorLine?.replace("作者/公众号：", "").trim() || "亲历者Qinlizhe",
+    author: authorLine?.replace("作者/公众号：", "").trim() || "",
     date: dateLine?.replace("发布时间：", "").trim() || "",
     source: sourceLine?.replace("原文链接：", "").trim() || "",
     category: categoryLine?.replace("栏目：", "").trim() || "疯言疯语",
@@ -294,6 +294,7 @@ function renderPost(post) {
   const source = post.source
     ? `<p class="source"><a href="${escapeHtml(post.source)}" rel="noopener noreferrer">${sourceLabel}</a></p>`
     : "";
+  const eyebrow = [post.category, post.author].filter(Boolean).join(" · ");
 
   return layout({
     title: `${post.title} · 亲历者 Qinlizhe`,
@@ -302,7 +303,7 @@ function renderPost(post) {
     content: `<main class="article-shell">
       <article class="article">
         <header class="article-header">
-          <p class="eyebrow">${escapeHtml(post.category)} · ${escapeHtml(post.author)}</p>
+          <p class="eyebrow">${escapeHtml(eyebrow)}</p>
           <h1>${escapeHtml(post.title)}</h1>
           <div class="article-meta">
             <time>${escapeHtml(post.date)}</time>
