@@ -58,6 +58,7 @@ a:hover {
 
 nav {
   display: flex;
+  flex-wrap: wrap;
   gap: 18px;
   font-size: 15px;
   color: var(--muted);
@@ -75,6 +76,10 @@ main {
 .intro {
   max-width: 820px;
   padding: 72px 0 56px;
+}
+
+.compact-intro {
+  padding-bottom: 44px;
 }
 
 .eyebrow {
@@ -140,6 +145,11 @@ main {
   grid-template-columns: minmax(190px, 260px) minmax(0, 1fr);
   gap: 38px;
   padding: 0 0 56px;
+}
+
+.category-archive {
+  max-width: 820px;
+  padding-bottom: 72px;
 }
 
 .category-header {
@@ -209,6 +219,23 @@ main {
   padding: 26px 0;
   color: var(--muted);
   font-size: 15px;
+}
+
+.section-action {
+  grid-column: 2;
+  margin: -34px 0 56px;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.section-action a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.section-action a:hover {
+  color: var(--accent);
 }
 
 .post-date,
@@ -310,6 +337,10 @@ main {
 
   .site-header {
     min-height: 66px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 0;
   }
 
   .intro {
@@ -333,6 +364,11 @@ main {
     grid-template-columns: 1fr;
     gap: 12px;
     padding-bottom: 44px;
+  }
+
+  .section-action {
+    grid-column: 1;
+    margin: -24px 0 44px;
   }
 
   .category-header {

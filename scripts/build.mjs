@@ -10,18 +10,22 @@ const contentDir = path.join(root, "content", "posts");
 const watch = process.argv.includes("--watch");
 const categories = [
   {
+    slug: "critique",
     name: "嬉笑怒骂",
     description: "批评国内外精神健康话语、机构实践与知识生产。"
   },
   {
+    slug: "mad-studies",
     name: "旁门左道",
     description: "亲历者研究、疯狂研究相关文献与实践速递。"
   },
   {
+    slug: "notes",
     name: "疯言疯语",
     description: "随笔、感想、短札，以及一些未完成的想法。"
   }
 ];
+const homePreviewCount = 3;
 
 function escapeHtml(value = "") {
   return value
@@ -179,6 +183,7 @@ function stripPostHeader(markdown) {
 async function ensureCleanDist() {
   await fs.rm(dist, { recursive: true, force: true });
   await fs.mkdir(path.join(dist, "posts"), { recursive: true });
+  await fs.mkdir(path.join(dist, "categories"), { recursive: true });
   await fs.mkdir(path.join(dist, "assets"), { recursive: true });
 }
 
@@ -188,14 +193,6 @@ async function copyPublic() {
 }
 
 async function collectPosts() {
-  const rootEntries = await fs.readdir(root, { withFileTypes: true });
-  const rootFiles = rootEntries
-    .filter((entry) => {
-      const lower = entry.name.toLowerCase();
-      return entry.isFile() && entry.name.endsWith(".md") && lower !== "readme.md";
-    })
-    .map((entry) => path.join(root, entry.name));
-
   let contentFiles = [];
   try {
     const contentEntries = await fs.readdir(contentDir, { withFileTypes: true });
@@ -206,10 +203,8 @@ async function collectPosts() {
     contentFiles = [];
   }
 
-  const files = [...rootFiles, ...contentFiles];
-
   const posts = [];
-  for (const file of files) {
+  for (const file of contentFiles) {
     const markdown = await fs.readFile(file, "utf8");
     const meta = extractMeta(markdown, file);
     const body = markdownToHtml(stripPostHeader(markdown));
@@ -220,6 +215,10 @@ async function collectPosts() {
 }
 
 function layout({ title, description, content, bodyClass = "" }) {
+  const categoryLinks = categories
+    .map((category) => `<a href="/categories/${category.slug}.html">${escapeHtml(category.name)}</a>`)
+    .join("");
+
   return `<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -233,7 +232,8 @@ function layout({ title, description, content, bodyClass = "" }) {
   <header class="site-header">
     <a class="site-name" href="/">亲历者 Qinlizhe</a>
     <nav aria-label="主要导航">
-      <a href="/">文章</a>
+      <a href="/">首页</a>
+      ${categoryLinks}
       <a href="/about.html">关于</a>
     </nav>
   </header>
@@ -250,6 +250,7 @@ function renderIndex(posts) {
     .map((category) => {
       const categoryPosts = posts.filter((post) => post.category === category.name);
       const postCards = categoryPosts
+        .slice(0, homePreviewCount)
         .map((post) => `<article class="post-list-item">
           <a href="/posts/${post.slug}.html">
             <span class="post-date">${escapeHtml(post.date)}</span>
@@ -267,6 +268,11 @@ function renderIndex(posts) {
         <div class="post-list">
           ${postCards || '<p class="empty-note">文章会放在这里。</p>'}
         </div>
+        ${
+          categoryPosts.length > homePreviewCount
+            ? `<p class="section-action"><a href="/categories/${category.slug}.html">查看全部 ${categoryPosts.length} 篇</a></p>`
+            : ""
+        }
       </section>`;
     })
     .join("\n");
@@ -281,10 +287,38 @@ function renderIndex(posts) {
         <h1>亲历者自己的书写、见证与资料存放处。</h1>
         <p>亲历者的自留地。收纳精神健康、疯狂研究、亲历者知识与本土行动相关文本。</p>
       </section>
-      <nav class="category-nav" aria-label="栏目导航">
-        ${categories.map((category) => `<a href="#${slugify(category.name)}">${escapeHtml(category.name)}</a>`).join("")}
-      </nav>
       ${categorySections}
+    </main>`
+  });
+}
+
+function renderCategoryPage(category, posts) {
+  const categoryPosts = posts.filter((post) => post.category === category.name);
+  const postCards = categoryPosts
+    .map((post) => `<article class="post-list-item">
+      <a href="/posts/${post.slug}.html">
+        <span class="post-date">${escapeHtml(post.date)}</span>
+        <h2>${escapeHtml(post.title)}</h2>
+        <p>${escapeHtml(post.description)}</p>
+      </a>
+    </article>`)
+    .join("\n");
+
+  return layout({
+    title: `${category.name} · 亲历者 Qinlizhe`,
+    description: category.description,
+    bodyClass: "category-page",
+    content: `<main>
+      <section class="intro compact-intro">
+        <p class="eyebrow">Category</p>
+        <h1>${escapeHtml(category.name)}</h1>
+        <p>${escapeHtml(category.description)}</p>
+      </section>
+      <section class="category-archive" aria-label="${escapeHtml(category.name)}文章列表">
+        <div class="post-list">
+          ${postCards || '<p class="empty-note">文章会放在这里。</p>'}
+        </div>
+      </section>
     </main>`
   });
 }
@@ -343,6 +377,9 @@ async function build() {
 
   await fs.writeFile(path.join(dist, "index.html"), renderIndex(posts));
   await fs.writeFile(path.join(dist, "about.html"), renderAbout());
+  for (const category of categories) {
+    await fs.writeFile(path.join(dist, "categories", `${category.slug}.html`), renderCategoryPage(category, posts));
+  }
   for (const post of posts) {
     await fs.writeFile(path.join(dist, "posts", `${post.slug}.html`), renderPost(post));
   }
