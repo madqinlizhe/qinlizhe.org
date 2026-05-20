@@ -284,7 +284,7 @@ function renderIndex(posts) {
     content: `<main>
       <section class="intro">
         <p class="eyebrow">qinlizhe research · mad studies in China</p>
-        <h1>亲历者自己的书写、见证与资料存放处。</h1>
+        <h1>亲历者的书写和见证</h1>
         <p>亲历者的自留地。收纳精神健康、疯狂研究、亲历者知识与本土行动相关文本。</p>
       </section>
       ${categorySections}
