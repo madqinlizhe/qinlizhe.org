@@ -15,9 +15,14 @@ const categories = [
     description: "批评国内外精神健康话语、机构实践与知识生产。"
   },
   {
-    slug: "mad-studies",
+    slug: "reading",
+    name: "狂人读报",
+    description: "文献、研究与思想速递。"
+  },
+  {
+    slug: "practice",
     name: "旁门左道",
-    description: "亲历者研究、疯狂研究相关文献与实践速递。"
+    description: "实践现场、具体项目与行动记录。"
   },
   {
     slug: "notes",
