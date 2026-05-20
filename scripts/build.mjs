@@ -22,7 +22,7 @@ const categories = [
   {
     slug: "notes",
     name: "疯言疯语",
-    description: "随笔、感想、短札，以及一些未完成的想法。"
+    description: "随笔、感想、点子"
   }
 ];
 const homePreviewCount = 3;
