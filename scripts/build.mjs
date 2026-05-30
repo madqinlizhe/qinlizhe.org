@@ -224,6 +224,30 @@ function layout({ title, description, content, bodyClass = "" }) {
     .map((category) => `<a href="/categories/${category.slug}.html">${escapeHtml(category.name)}</a>`)
     .join("");
 
+  const subscribe = `<section class="subscribe-box" aria-label="订阅更新">
+    <div>
+      <p class="eyebrow">Newsletter</p>
+      <h2>订阅更新</h2>
+      <p>留下邮箱。新文章发布后，我们会不定期手动发送通知，你可以随时退订。</p>
+    </div>
+    <form
+      action="https://buttondown.com/api/emails/embed-subscribe/qinlizheorg"
+      method="post"
+      class="embeddable-buttondown-form subscribe-form"
+    >
+      <label for="bd-email">邮箱地址</label>
+      <div class="subscribe-row">
+        <input type="email" name="email" id="bd-email" placeholder="you@example.com" required>
+        <input type="submit" value="订阅">
+      </div>
+      <p class="subscribe-powered">
+        <a href="https://buttondown.com/refer/qinlizheorg" target="_blank" rel="noopener noreferrer">
+          Powered by Buttondown.
+        </a>
+      </p>
+    </form>
+  </section>`;
+
   return `<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -243,6 +267,7 @@ function layout({ title, description, content, bodyClass = "" }) {
     </nav>
   </header>
   ${content}
+  ${subscribe}
   <footer class="site-footer">
     <p>qinlizhe research · mad studies in China</p>
   </footer>

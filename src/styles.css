@@ -317,6 +317,94 @@ main {
   font-weight: 800;
 }
 
+.subscribe-box {
+  width: min(calc(100% - 32px), 1040px);
+  margin: 0 auto 48px;
+  padding: 30px 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
+  gap: 34px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.subscribe-box h2 {
+  margin: 0 0 8px;
+  color: var(--blue);
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.subscribe-box p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.subscribe-form {
+  align-self: center;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+}
+
+.subscribe-form label {
+  display: block;
+  margin: 0 0 8px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.subscribe-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.subscribe-form input {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  font: inherit;
+}
+
+.subscribe-form input[type="email"] {
+  width: 100%;
+  padding: 8px 12px;
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.subscribe-form input[type="email"]:focus {
+  outline: 2px solid color-mix(in srgb, var(--blue), transparent 72%);
+  outline-offset: 2px;
+  border-color: var(--blue);
+}
+
+.subscribe-form input[type="submit"] {
+  padding: 8px 18px;
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.subscribe-form input[type="submit"]:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.subscribe-powered {
+  margin-top: 10px !important;
+  font-size: 12px !important;
+}
+
+.subscribe-powered a {
+  color: var(--muted);
+}
+
 .site-footer {
   padding: 28px 0 42px;
   border-top: 1px solid var(--line);
@@ -386,5 +474,16 @@ main {
 
   .article {
     padding: 42px 0 64px;
+  }
+
+  .subscribe-box {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-bottom: 34px;
+    padding: 24px 0;
+  }
+
+  .subscribe-row {
+    grid-template-columns: 1fr;
   }
 }
