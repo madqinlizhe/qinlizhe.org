@@ -255,7 +255,7 @@ function layout({ title, description, content, bodyClass = "" }) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${escapeHtml(title)}</title>
   <meta name="description" content="${escapeHtml(description)}">
-  <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/styles.css?v=20260530-newsletter">
 </head>
 <body class="${bodyClass}">
   <header class="site-header">

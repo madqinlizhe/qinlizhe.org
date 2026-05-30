@@ -318,20 +318,19 @@ main {
 }
 
 .subscribe-box {
-  width: min(calc(100% - 32px), 1040px);
-  margin: 0 auto 48px;
-  padding: 30px 0;
+  width: min(calc(100% - 32px), var(--max));
+  margin: 12px auto 54px;
+  padding: 34px 0 36px;
   display: grid;
-  grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
-  gap: 34px;
-  border-top: 1px solid var(--line);
+  gap: 22px;
+  border-top: 2px solid var(--blue);
   border-bottom: 1px solid var(--line);
 }
 
 .subscribe-box h2 {
   margin: 0 0 8px;
   color: var(--blue);
-  font-size: 28px;
+  font-size: 34px;
   line-height: 1.2;
   letter-spacing: 0;
 }
@@ -339,20 +338,19 @@ main {
 .subscribe-box p {
   margin: 0;
   color: var(--muted);
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.7;
 }
 
 .subscribe-form {
-  align-self: center;
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
 }
 
 .subscribe-form label {
   display: block;
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   color: var(--ink);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
 }
 
@@ -363,15 +361,16 @@ main {
 }
 
 .subscribe-form input {
-  min-height: 44px;
+  min-height: 52px;
   border: 1px solid var(--line);
   border-radius: 0;
   font: inherit;
+  font-size: 16px;
 }
 
 .subscribe-form input[type="email"] {
   width: 100%;
-  padding: 8px 12px;
+  padding: 10px 14px;
   background: #ffffff;
   color: var(--ink);
 }
@@ -383,7 +382,8 @@ main {
 }
 
 .subscribe-form input[type="submit"] {
-  padding: 8px 18px;
+  min-width: 92px;
+  padding: 10px 22px;
   border-color: var(--blue);
   background: var(--blue);
   color: #ffffff;
@@ -397,8 +397,8 @@ main {
 }
 
 .subscribe-powered {
-  margin-top: 10px !important;
-  font-size: 12px !important;
+  margin-top: 12px !important;
+  font-size: 13px !important;
 }
 
 .subscribe-powered a {
