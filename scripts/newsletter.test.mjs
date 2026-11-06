@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
-import { createClient, ensureEmail, newPostFiles, parsePost, slugify, syncNewsletter, verifyLive } from "./newsletter.mjs";
+import { bodyMatches, createClient, emailHtml, ensureEmail, newPostFiles, parsePost, slugify, syncNewsletter, verifyLive } from "./newsletter.mjs";
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json" } });
@@ -68,6 +68,23 @@ test("metadata, opt-out, and canonical URL match the article format", () => {
   assert.equal(post.notify, false);
   assert.equal(decodeURI(post.url), "https://qinlizhe.org/posts/一个标题.html");
   assert.throws(() => parsePost("# 标题\n邮件通知：错误", "标题.md", "https://qinlizhe.org"), /Invalid/);
+});
+
+test("stored HTML and encoded links verify without requiring byte-identical Markdown", () => {
+  const source = "你好，\n\n第一封信。\n\n[文章](https://qinlizhe.org/posts/文章.html)";
+  const html = '<p>你好，</p><p>第一封信。</p><a href="https://qinlizhe.org/posts/%E6%96%87%E7%AB%A0.html?utm_medium=email">文章</a>';
+  assert.equal(bodyMatches(html, source), true);
+  assert.equal(bodyMatches("你好，", source), false);
+  assert.equal(bodyMatches("", source), false);
+});
+
+test("emails use real headings and links in an explicitly rich-text editor", () => {
+  const html = emailHtml("你好，\n\n## 嬉笑怒骂\n\n- [文章](https://qinlizhe.org)\n\n谢谢。");
+  assert.ok(html.startsWith("<!-- buttondown-editor-mode: fancy -->"));
+  assert.ok(html.includes("<h2>嬉笑怒骂</h2>"));
+  assert.ok(html.includes('<a href="https://qinlizhe.org"'));
+  assert.ok(!html.includes("##"));
+  assert.ok(!html.includes("[文章]"));
 });
 
 test("only committed new articles qualify; edits and renames retain identity", async (t) => {

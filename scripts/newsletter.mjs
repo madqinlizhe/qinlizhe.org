@@ -3,16 +3,16 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
+import { markdownToHtml, slugify } from "./markdown.mjs";
+
+export { slugify } from "./markdown.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const apiBase = "https://api.buttondown.com/v1/";
 const sendingStatuses = new Set(["sent", "about_to_send", "in_flight", "scheduled", "throttled", "resending"]);
 
-export function slugify(filename) {
-  return path.basename(filename, ".md").normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^\p{Script=Han}\p{Letter}\p{Number}]+/gu, "-")
-    .replace(/^-+|-+$/g, "").toLowerCase();
+export function emailHtml(markdown) {
+  return `<!-- buttondown-editor-mode: fancy -->${markdownToHtml(markdown)}`;
 }
 
 export function parsePost(markdown, filename, site) {
@@ -116,7 +116,7 @@ export function createClient(key, fetcher = fetch) {
   };
 }
 
-export async function ensureEmail(client, existing, payload) {
+export async function ensureEmail(client, existing, payload, sourceMarkdown = payload.body) {
   const matches = existing.filter((email) => email.slug === payload.slug);
   if (matches.length > 1) throw new Error(`Duplicate email identity: ${payload.slug}`);
   if (matches.length) return { email: matches[0], created: false };
@@ -125,8 +125,8 @@ export async function ensureEmail(client, existing, payload) {
   });
   if (!created.id) throw new Error("Buttondown did not return the email ID");
   const email = await client.request(`emails/${encodeURIComponent(created.id)}`);
-  if (email.slug !== payload.slug || email.subject !== payload.subject || email.body !== payload.body) {
-    throw new Error("Buttondown email verification failed; inspect draft before retrying");
+  if (email.slug !== payload.slug || email.subject !== payload.subject || !bodyMatches(email.body, sourceMarkdown)) {
+    throw new Error(`Buttondown email verification failed for ${email.id}; inspect draft before retrying`);
   }
   if (payload.status === "draft" && email.status !== "draft") throw new Error("Welcome email was not saved as a draft");
   if (payload.status === "about_to_send" && !sendingStatuses.has(email.status)) {
@@ -134,6 +134,19 @@ export async function ensureEmail(client, existing, payload) {
   }
   existing.push(email);
   return { email, created: true };
+}
+
+export function bodyMatches(saved, source) {
+  if (typeof saved !== "string" || !saved.trim()) return false;
+  // Buttondown may render Markdown as HTML and encode/rewrite links on storage.
+  const decoded = saved.replace(/(?:%[0-9a-f]{2})+/gi, (encoded) => {
+    try { return decodeURIComponent(encoded); } catch { return encoded; }
+  });
+  const paragraphs = source.split(/\n\s*\n/).map((part) => part.trim())
+    .filter((part) => part && !/^[#\-\[*]/.test(part));
+  if (!paragraphs.length || !decoded.includes(paragraphs[0]) || !decoded.includes(paragraphs.at(-1))) return false;
+  const links = [...source.matchAll(/\]\((https:\/\/[^)]+)\)/g)].map((match) => decodeURI(match[1]));
+  return links.every((link) => decoded.includes(link));
 }
 
 export async function verifyLive(post, fetcher = fetch) {
@@ -155,10 +168,10 @@ export async function syncNewsletter({ cwd = root, key = process.env.BUTTONDOWN_
   await client.selectNewsletter(config.username);
   const existing = await client.list("emails");
   const welcome = await ensureEmail(client, existing, {
-    subject: heading.slice(2).trim(), body: bodyLines.join("\n").trim(),
+    subject: heading.slice(2).trim(), body: emailHtml(bodyLines.join("\n").trim()),
     slug: config.welcomeSlug, status: "draft", archival_mode: "enabled",
     metadata: { qinlizhe_kind: "welcome" }
-  });
+  }, bodyLines.join("\n").trim());
   log(`Welcome: ${welcome.email.id} (${welcome.email.status}); ${welcome.created ? "created draft" : "existing email preserved"}`);
   if (config.waitForWelcomeSent && welcome.email.status !== "sent") {
     log("Waiting for welcome email review and sending; no article notifications sent.");
@@ -174,12 +187,13 @@ export async function syncNewsletter({ cwd = root, key = process.env.BUTTONDOWN_
   // Verify every destination before queuing any email in this batch.
   for (const post of pending) await verifyLive(post, fetcher);
   for (const post of pending) {
+    const body = `网站有一篇新文章。\n\n## ${post.title}\n\n${post.description}\n\n[阅读全文](${post.url})\n\n亲历者 Qinlizhe\n\n[回到网站](${config.site})`;
     const result = await ensureEmail(client, existing, {
       subject: `亲历者更新｜${post.title}`,
-      body: `网站有一篇新文章。\n\n## ${post.title}\n\n${post.description}\n\n[阅读全文](${post.url})\n\n亲历者 Qinlizhe\n\n[回到网站](${config.site})`,
+      body: emailHtml(body),
       slug: post.slug, status: "about_to_send", canonical_url: post.url,
       archival_mode: "enabled", metadata: { qinlizhe_kind: "post", qinlizhe_file: post.file }
-    });
+    }, body);
     log(`Article notification: ${result.email.id} (${result.email.status})`);
   }
   log(`New article notifications queued: ${pending.length}`);
