@@ -8,20 +8,11 @@
 
 ## I Used Zines to Help Students Rethink Psychiatry
 
-In a summer liberal arts program organized by a non-profit organization, I used zines to help students reflect on psychiatry. The students ranged from 16 to 50 years old, including high school students, individuals with mental disorders, health professionals, and ordinary people interested in psychiatry. Everyone had different understandings of mental health, and their educational backgrounds varied.
+In an activity organized by a non-profit organization, I used zines to help participants reflect on psychiatry and mental health.
 
-Each class had a specific theme, centered around slides I prepared. The content drew partly from my graduate studies and partly from my own practical experience. Despite many complex examples, I tried to translate them into simple language understandable to the general public.
+Each session focused on a broad theme. I tried to explain complex ideas in simple language understandable to the general public.
 
-Here's the outline of my course. Each zine page corresponds to a class session:
-
-1. Normal vs. Abnormal: What is Mental Health?
-2. Crazy Like Us: Mental Health Beliefs and Practices in Different Cultures and Societies in a Globalized Context
-3. Starting from Neurasthenia: Chinese Mental Health Studies from an Anthropological Perspective
-4. Indigenous Mental Health Folk Practices in China
-5. People in Trouble: Depression and Modernity
-6. From Participatory Observation to Observational Participation: Producing Knowledge about Mental Health
-7. Gazing into the Abyss or Being Gazed at by the Abyss: Ethics and Boundaries in Action Research
-8. Where Do We Stand, Where Are We Heading: The Mental Health Landscape of Our Era
+Broadly, the discussions explored how ideas about mental health are shaped by social and cultural contexts, how people make sense of their experiences, and questions about knowledge, care, and power.
 
 To assess students' understanding of each class and optimize my teaching, I had everyone create a small 8-page zine on A4 paper during the first session. At the end of each class, I asked them to illustrate their takeaways from the session on their zines. The content was unrestricted, ranging from simple reproductions of class content to personal reflections.
 
@@ -35,9 +26,9 @@ This is students' reflection on the relationship between normal and abnormal, an
 
 ![Student zine reflecting on the globalization of psychiatry](/images/zines-rethink-psychiatry/zine-2.jpg)
 
-![Student zine poem after reading Crazy Like Us](/images/zines-rethink-psychiatry/zine-3.jpg)
+![Student zine poem about mental health and society](/images/zines-rethink-psychiatry/zine-3.jpg)
 
-This is students' reflection on the globalization of psychiatry. They collectively read the book *Crazy Like Us*. This is a poem written by a student with mental health issues, filled with insightful observations.
+These works reflect on how ideas about mental health travel across cultures and societies.
 
 ![Student zine reflecting on professional burnout among helpers](/images/zines-rethink-psychiatry/zine-4.jpg)
 
