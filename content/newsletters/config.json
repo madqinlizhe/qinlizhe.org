@@ -1,0 +1,9 @@
+{
+  "site": "https://qinlizhe.org",
+  "username": "qinlizheorg",
+  "baselineCommit": "98d3d903746983ae29c28fbeaa60a51ab1313f84",
+  "welcomeFile": "content/newsletters/001-初次见面.md",
+  "welcomeSlug": "qinlizhe-newsletter-001",
+  "waitForWelcomeSent": true,
+  "maxNewPostsPerRun": 5
+}

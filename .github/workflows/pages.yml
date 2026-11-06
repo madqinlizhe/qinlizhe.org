@@ -27,7 +27,9 @@ jobs:
           node-version: 22
 
       - name: Build site
-        run: npm run build
+        run: |
+          node --test scripts/newsletter.test.mjs
+          npm run build
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
@@ -44,3 +46,24 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  newsletter:
+    name: Prepare newsletter and notify subscribers
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: github.ref == 'refs/heads/main'
+    timeout-minutes: 10
+    steps:
+      - name: Check out published revision
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Sync newsletter
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+        run: node scripts/newsletter.mjs

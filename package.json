@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "dev": "node scripts/build.mjs --watch",
-    "import": "node scripts/import-inbox.mjs"
+    "import": "node scripts/import-inbox.mjs",
+    "test:newsletter": "node --test scripts/newsletter.test.mjs"
   },
   "dependencies": {},
   "devDependencies": {}

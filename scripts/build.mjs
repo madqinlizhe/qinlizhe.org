@@ -177,6 +177,7 @@ function stripPostHeader(markdown) {
       lines[index].startsWith("原文链接：") ||
       lines[index].startsWith("栏目：") ||
       lines[index].startsWith("摘要：") ||
+      lines[index].startsWith("邮件通知：") ||
       lines[index].trim() === "")
   ) {
     index += 1;
