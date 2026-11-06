@@ -1,7 +1,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { escapeHtml, markdownToHtml, slugify } from "./markdown.mjs";
+import { markdownToHtml, slugify } from "./markdown.mjs";
+import { createHash } from "node:crypto";
+import { categories, postUrl, renderIndex, renderCategoryPage, renderPost, renderAbout, renderAll } from "./render.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
@@ -9,31 +11,6 @@ const publicDir = path.join(root, "public");
 const styleSource = path.join(root, "src", "styles.css");
 const contentDir = path.join(root, "content", "posts");
 const watch = process.argv.includes("--watch");
-const categories = [
-  {
-    slug: "critique",
-    name: "嬉笑怒骂",
-    description: "批评国内外精神健康话语、机构实践与知识生产。"
-  },
-  {
-    slug: "reading",
-    name: "狂人读报",
-    description: "文献、研究与思想速递。"
-  },
-  {
-    slug: "practice",
-    name: "旁门左道",
-    description: "实践现场、具体项目与行动记录。"
-  },
-  {
-    slug: "notes",
-    name: "疯言疯语",
-    description: "随笔、感想、点子"
-  }
-];
-const homePreviewCount = 3;
-
-
 function extractMeta(markdown, filename) {
   const lines = markdown.split(/\r?\n/);
   const titleLine = lines.find((line) => line.startsWith("# "));
@@ -107,205 +84,33 @@ async function collectPosts() {
     const markdown = await fs.readFile(file, "utf8");
     const meta = extractMeta(markdown, file);
     const body = markdownToHtml(stripPostHeader(markdown));
-    posts.push({ ...meta, body });
+    posts.push({ ...meta, body, text: stripPostHeader(markdown) });
   }
 
   return posts.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-}
-
-function layout({ title, description, content, bodyClass = "" }) {
-  const categoryLinks = categories
-    .map((category) => `<a href="/categories/${category.slug}.html">${escapeHtml(category.name)}</a>`)
-    .join("");
-
-  const subscribe = `<section class="subscribe-box" aria-label="订阅更新">
-    <div>
-      <p class="eyebrow">Newsletter</p>
-      <h2>订阅更新</h2>
-      <p>留下邮箱。新文章发布后，我们会不定期手动发送通知，你可以随时退订。</p>
-    </div>
-    <form
-      action="https://buttondown.com/api/emails/embed-subscribe/qinlizheorg"
-      method="post"
-      class="embeddable-buttondown-form subscribe-form"
-    >
-      <label for="bd-email">邮箱地址</label>
-      <div class="subscribe-row">
-        <input type="email" name="email" id="bd-email" placeholder="you@example.com" required>
-        <input type="submit" value="订阅">
-      </div>
-      <p class="subscribe-powered">
-        <a href="https://buttondown.com/refer/qinlizheorg" target="_blank" rel="noopener noreferrer">
-          Powered by Buttondown.
-        </a>
-      </p>
-    </form>
-  </section>`;
-
-  return `<!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${escapeHtml(title)}</title>
-  <meta name="description" content="${escapeHtml(description)}">
-  <link rel="stylesheet" href="/assets/styles.css?v=20260530-newsletter">
-</head>
-<body class="${bodyClass}">
-  <header class="site-header">
-    <a class="site-name" href="/">亲历者 Qinlizhe</a>
-    <nav aria-label="主要导航">
-      <a href="/">首页</a>
-      ${categoryLinks}
-      <a href="/about.html">关于</a>
-    </nav>
-  </header>
-  ${content}
-  ${subscribe}
-  <footer class="site-footer">
-    <p>qinlizhe research · mad studies in China</p>
-  </footer>
-</body>
-</html>`;
-}
-
-function renderIndex(posts) {
-  const categorySections = categories
-    .map((category) => {
-      const categoryPosts = posts.filter((post) => post.category === category.name);
-      const postCards = categoryPosts
-        .slice(0, homePreviewCount)
-        .map((post) => `<article class="post-list-item">
-          <a href="/posts/${post.slug}.html">
-            <span class="post-date">${escapeHtml(post.date)}</span>
-            <h3>${escapeHtml(post.title)}</h3>
-            <p>${escapeHtml(post.description)}</p>
-          </a>
-        </article>`)
-        .join("\n");
-
-      return `<section class="category-section" id="${slugify(category.name)}">
-        <header class="category-header">
-          <h2>${escapeHtml(category.name)}</h2>
-          <p>${escapeHtml(category.description)}</p>
-        </header>
-        <div class="post-list">
-          ${postCards || '<p class="empty-note">文章会放在这里。</p>'}
-        </div>
-        ${
-          categoryPosts.length > homePreviewCount
-            ? `<p class="section-action"><a href="/categories/${category.slug}.html">查看全部 ${categoryPosts.length} 篇</a></p>`
-            : ""
-        }
-      </section>`;
-    })
-    .join("\n");
-
-  return layout({
-    title: "亲历者 Qinlizhe",
-    description: "qinlizhe research · mad studies in China",
-    bodyClass: "home",
-    content: `<main>
-      <section class="intro">
-        <p class="eyebrow">qinlizhe research · mad studies in China</p>
-        <h1>亲历者的书写和见证</h1>
-        <p>亲历者的自留地。收纳精神健康、疯狂研究、亲历者知识与本土行动相关文本。</p>
-      </section>
-      ${categorySections}
-    </main>`
-  });
-}
-
-function renderCategoryPage(category, posts) {
-  const categoryPosts = posts.filter((post) => post.category === category.name);
-  const postCards = categoryPosts
-    .map((post) => `<article class="post-list-item">
-      <a href="/posts/${post.slug}.html">
-        <span class="post-date">${escapeHtml(post.date)}</span>
-        <h2>${escapeHtml(post.title)}</h2>
-        <p>${escapeHtml(post.description)}</p>
-      </a>
-    </article>`)
-    .join("\n");
-
-  return layout({
-    title: `${category.name} · 亲历者 Qinlizhe`,
-    description: category.description,
-    bodyClass: "category-page",
-    content: `<main>
-      <section class="intro compact-intro">
-        <p class="eyebrow">Category</p>
-        <h1>${escapeHtml(category.name)}</h1>
-        <p>${escapeHtml(category.description)}</p>
-      </section>
-      <section class="category-archive" aria-label="${escapeHtml(category.name)}文章列表">
-        <div class="post-list">
-          ${postCards || '<p class="empty-note">文章会放在这里。</p>'}
-        </div>
-      </section>
-    </main>`
-  });
-}
-
-function renderPost(post) {
-  const sourceLabel = post.source.includes("doi.org") ? "原文 DOI" : "原文链接";
-  const source = post.source
-    ? `<p class="source"><a href="${escapeHtml(post.source)}" rel="noopener noreferrer">${sourceLabel}</a></p>`
-    : "";
-  const eyebrow = [post.category, post.author].filter(Boolean).join(" · ");
-
-  return layout({
-    title: `${post.title} · 亲历者 Qinlizhe`,
-    description: post.description,
-    bodyClass: "article-page",
-    content: `<main class="article-shell">
-      <article class="article">
-        <header class="article-header">
-          <p class="eyebrow">${escapeHtml(eyebrow)}</p>
-          <h1>${escapeHtml(post.title)}</h1>
-          <div class="article-meta">
-            <time>${escapeHtml(post.date)}</time>
-            ${source}
-          </div>
-        </header>
-        <div class="article-body">
-          ${post.body}
-        </div>
-      </article>
-    </main>`
-  });
-}
-
-function renderAbout() {
-  return layout({
-    title: "关于 · 亲历者 Qinlizhe",
-    description: "关于 qinlizhe.org",
-    content: `<main class="article-shell">
-      <article class="article compact">
-        <header class="article-header">
-          <p class="eyebrow">About</p>
-          <h1>关于这个站点</h1>
-        </header>
-        <div class="article-body">
-          <p>我们是一些心有委屈与不甘、却仍对精神健康事业抱有热情的亲历者。“亲历者”不仅意味着亲身经历，也意味着一手的见证。这里是一片自留地，用来保存笔记、评论与疯狂研究 Mad Studies 相关资源，为中文读者留下不被收编的边缘声音。</p>
-        </div>
-      </article>
-    </main>`
-  });
 }
 
 async function build() {
   await ensureCleanDist();
   await copyPublic();
   const posts = await collectPosts();
+  const version = createHash("sha256")
+    .update(await fs.readFile(styleSource))
+    .update(await fs.readFile(path.join(publicDir, "site.js")))
+    .digest("hex").slice(0, 12);
 
-  await fs.writeFile(path.join(dist, "index.html"), renderIndex(posts));
-  await fs.writeFile(path.join(dist, "about.html"), renderAbout());
+  await fs.writeFile(path.join(dist, "index.html"), renderIndex(posts, version));
+  await fs.writeFile(path.join(dist, "about.html"), renderAbout(version));
+  await fs.writeFile(path.join(dist, "all.html"), renderAll(posts, version));
+  await fs.writeFile(path.join(dist, "assets", "search.json"), JSON.stringify(posts.map((post) => ({
+    title: post.title, category: post.category, description: post.description, date: post.date,
+    url: postUrl(post), text: post.text
+  }))));
   for (const category of categories) {
-    await fs.writeFile(path.join(dist, "categories", `${category.slug}.html`), renderCategoryPage(category, posts));
+    await fs.writeFile(path.join(dist, "categories", `${category.slug}.html`), renderCategoryPage(category, posts, version));
   }
   for (const post of posts) {
-    await fs.writeFile(path.join(dist, "posts", `${post.slug}.html`), renderPost(post));
+    await fs.writeFile(path.join(dist, "posts", `${post.slug}.html`), renderPost(post, version));
   }
 
   console.log(`Built ${posts.length} post(s) into ${dist}`);

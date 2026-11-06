@@ -28,7 +28,7 @@ jobs:
 
       - name: Build site
         run: |
-          node --test scripts/newsletter.test.mjs
+          node --test scripts/*.test.mjs
           npm run build
 
       - name: Upload site
