@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { createHash } from "node:crypto";
 import { buildEnglish, loadEnglishManifest } from "./english.mjs";
 import { markdownToHtml, slugify } from "./markdown.mjs";
 
@@ -85,7 +86,16 @@ test("production has no review artifacts and the preview remains explicitly non-
   const home = await fs.readFile(path.join(out, "index.html"), "utf8");
   assert.ok(home.includes("All 10 pieces"));
   assert.ok(!home.includes("<form"));
-  await buildEnglish({ out, preview: true });
-  const preview = await fs.readFile(path.join(out, "index.html"), "utf8");
-  assert.ok(preview.includes('name="robots" content="noindex,nofollow"'));
+  let sourceChanged = false;
+  for (const p of manifest.posts) {
+    const source = await fs.readFile(path.join(root, "content/posts", p.source));
+    if (createHash("sha256").update(source).digest("hex") !== p.sourceHash) sourceChanged = true;
+  }
+  if (sourceChanged) {
+    await assert.rejects(buildEnglish({ out, preview: true }), /Chinese source changed/);
+  } else {
+    await buildEnglish({ out, preview: true });
+    const preview = await fs.readFile(path.join(out, "index.html"), "utf8");
+    assert.ok(preview.includes('name="robots" content="noindex,nofollow"'));
+  }
 });
