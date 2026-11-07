@@ -22,7 +22,7 @@ function newsletter() {
   </section>`;
 }
 
-function layout({ title, description, content, bodyClass = "", active = "", pathname = "/" }, version) {
+function layout({ title, description, content, bodyClass = "", active = "", pathname = "/", englishPath = "/en/", translated = true }, version) {
   const nav = [{ slug: "home", name: "最新", url: "/" }, ...categories.map((category) => ({ ...category, url: `/categories/${category.slug}.html` }))];
   return `<!doctype html>
 <html lang="zh-CN" data-assets="${version}">
@@ -30,13 +30,14 @@ function layout({ title, description, content, bodyClass = "", active = "", path
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}">
   <link rel="canonical" href="https://qinlizhe.org${pathname}">
+  <link rel="alternate" hreflang="zh-CN" href="https://qinlizhe.org${pathname}">${translated ? `<link rel="alternate" hreflang="en" href="https://qinlizhe.org${englishPath}">` : ""}
   <script>try{const p=JSON.parse(localStorage.getItem('qinlizhe-reading-preferences')||'{}');if(p.dark)document.documentElement.classList.add('dark');if(p.size)document.documentElement.style.setProperty('--reading-size',Math.max(18,Math.min(26,Number(p.size)||20))+'px')}catch{}</script>
   <link rel="stylesheet" href="/assets/styles.css?v=${version}"><script src="/site.js?v=${version}" defer></script>
 </head>
 <body class="${bodyClass}">
   <a class="skip" href="#main">跳到正文</a>
   <header class="site-header wrapper">
-    <div class="utility"><span>QINLIZHE RESEARCH · MAD STUDIES IN CHINA</span><div class="tools"><button class="icon-button" data-action="search" aria-label="搜索文章" data-tip="搜索文章">${icon("search")}</button><button class="icon-button" data-action="theme" aria-label="切换明暗" data-tip="切换明暗">${icon("moon")}</button></div></div>
+    <div class="utility"><span>QINLIZHE RESEARCH · MAD STUDIES IN CHINA</span><div class="tools"><nav class="language-switch" aria-label="语言"><span lang="zh-CN" aria-current="page">中文</span><span aria-hidden="true">/</span><a href="${englishPath}" lang="en" hreflang="en">EN</a></nav><button class="icon-button" data-action="search" aria-label="搜索文章" data-tip="搜索文章">${icon("search")}</button><button class="icon-button" data-action="theme" aria-label="切换明暗" data-tip="切换明暗">${icon("moon")}</button></div></div>
     <div class="masthead"><a class="wordmark" href="/"><span>亲历者<span class="wordmark-dot">.</span></span><small>Qinlizhe</small></a><div class="masthead-description"><strong>亲历者的书写和见证</strong><p>精神健康、疯狂研究、亲历者知识与本土行动。</p></div></div>
     <nav class="navigation" aria-label="主要导航">${nav.map((item) => `<a href="${item.url}" data-nav="${item.slug}"${active === item.slug ? ' aria-current="page"' : ""}>${item.name}</a>`).join("")}<span class="nav-space"></span><a href="/about.html" data-nav="about"${active === "about" ? ' aria-current="page"' : ""}>关于</a><a class="nav-subscribe" href="#subscribe">邮件订阅${icon("arrow-up-right")}</a></nav>
   </header>
@@ -78,17 +79,17 @@ function archiveContent(posts, category) {
 }
 
 export function renderCategoryPage(category, posts, version) {
-  return layout({ title: `${category.name} · 亲历者 Qinlizhe`, description: category.description, bodyClass: "category-page", active: category.slug, pathname: `/categories/${category.slug}.html`, content: archiveContent(posts, category) }, version);
+  return layout({ title: `${category.name} · 亲历者 Qinlizhe`, description: category.description, bodyClass: "category-page", active: category.slug, pathname: `/categories/${category.slug}.html`, englishPath: `/en/categories/${category.slug}.html`, content: archiveContent(posts, category) }, version);
 }
 
 export function renderAll(posts, version) {
-  return layout({ title: "全部文章 · 亲历者 Qinlizhe", description: "亲历者的全部文章、笔记、评论与实践记录。", bodyClass: "archive-page", pathname: "/all.html", content: archiveContent(posts) }, version);
+  return layout({ title: "全部文章 · 亲历者 Qinlizhe", description: "亲历者的全部文章、笔记、评论与实践记录。", bodyClass: "archive-page", pathname: "/all.html", englishPath: "/en/all.html", content: archiveContent(posts) }, version);
 }
 
 export function renderPost(post, version) {
   const category = categories.find((item) => item.name === post.category);
   return layout({
-    title: `${post.title} · 亲历者 Qinlizhe`, description: post.description, bodyClass: "article-page", active: category?.slug, pathname: postUrl(post),
+    title: `${post.title} · 亲历者 Qinlizhe`, description: post.description, bodyClass: "article-page", active: category?.slug, pathname: postUrl(post), englishPath: post.englishPath || "/en/", translated: Boolean(post.englishPath),
     content: `<main id="main" class="wrapper" tabindex="-1"><div class="reading-bar"><a class="back-link" href="/">${icon("arrow-left")}返回首页</a><div class="reading-controls" aria-label="正文字号"><button class="icon-button" data-action="smaller" aria-label="缩小字号" data-tip="缩小字号">${icon("minus")}</button><span id="reading-size">20px</span><button class="icon-button" data-action="larger" aria-label="放大字号" data-tip="放大字号">${icon("plus")}</button></div></div><article class="article"><header class="article-header"><p class="eyebrow">${escapeHtml(post.category)}<time datetime="${escapeHtml(post.date)}">${dateLabel(post.date)}</time></p><h1>${escapeHtml(post.title)}</h1><p class="description">${escapeHtml(post.description)}</p><div class="article-byline">${post.author ? `<span>${escapeHtml(post.author)}</span>` : ""}${post.source ? `<a href="${escapeHtml(post.source)}" target="_blank" rel="noopener noreferrer">${post.source.includes("doi.org") ? "原文 DOI" : "原文链接"}${icon("arrow-up-right")}</a>` : ""}</div></header><div id="article-content" class="article-body">
 ${post.body}
 </div><div class="article-end"><a href="${category ? `/categories/${category.slug}.html` : "/all.html"}">更多${escapeHtml(post.category)}${icon("arrow-right")}</a><a href="/">${icon("arrow-left")}返回首页</a></div></article></main>`
@@ -96,5 +97,5 @@ ${post.body}
 }
 
 export function renderAbout(version) {
-  return layout({ title: "关于 · 亲历者 Qinlizhe", description: "关于 qinlizhe.org", bodyClass: "about-page", active: "about", pathname: "/about.html", content: `<main id="main" class="wrapper" tabindex="-1"><article class="about-content"><p class="eyebrow">亲历者 Qinlizhe</p><h1>关于这个站点</h1><p>我们是一些心有委屈与不甘、却仍对精神健康事业抱有热情的亲历者。“亲历者”不仅意味着亲身经历，也意味着一手的见证。</p><p>这里是一片自留地，用来保存笔记、评论与疯狂研究 Mad Studies 相关资源，为中文读者留下不被收编的边缘声音。</p></article></main>` }, version);
+  return layout({ title: "关于 · 亲历者 Qinlizhe", description: "关于 qinlizhe.org", bodyClass: "about-page", active: "about", pathname: "/about.html", englishPath: "/en/about.html", content: `<main id="main" class="wrapper" tabindex="-1"><article class="about-content"><p class="eyebrow">亲历者 Qinlizhe</p><h1>关于这个站点</h1><p>我们是一些心有委屈与不甘、却仍对精神健康事业抱有热情的亲历者。“亲历者”不仅意味着亲身经历，也意味着一手的见证。</p><p>这里是一片自留地，用来保存笔记、评论与疯狂研究 Mad Studies 相关资源，为中文读者留下不被收编的边缘声音。</p></article></main>` }, version);
 }

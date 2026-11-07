@@ -62,3 +62,16 @@ npm run build
 - 如果邮件步骤失败，在 Actions 中重跑失败步骤即可；不需要重新发布文章。
 
 测试：`npm run test:newsletter`。自动邮件失败不会撤销已经成功上线的网站。
+
+## 英文精选版
+
+英文入口为 `/en/`。正式英文稿保存在 `content/en/posts/`，`content/en/manifest.json` 维护选篇、对应中文文件、栏目、摘要和必要的背景说明。英文版是精选集，不要求每篇中文文章同步翻译。
+
+- 页顶的 `中文 / EN` 在手机和桌面均可用。已翻译文章直接切到对应译文；未翻译文章的 EN 入口进入英文首页。
+- 英文首页、关于页、全部文章和栏目页与相应中文页面互相对应。保留各自独立的搜索内容。
+- `node scripts/build.mjs` 一次构建两种语言；`node scripts/english-preview.mjs` 只更新本地英文预览。
+- 中文原稿指纹改变时，正式构建提示英文可能落后，但不阻止中文更新；本地英文审阅预览会要求先对照修订。
+- 英文文章的加入与修改不会触发现有中文新文章邮件通知。英文页链接原来的 Buttondown 列表，不另建名单。
+- `drafts/english-edition` 下的私人审阅清单不提交、不发布。本机旧译稿路径链接到正式英文文件，不是第二份稿件。
+
+检查：`node --test scripts/english.test.mjs scripts/site.test.mjs scripts/newsletter.test.mjs`。

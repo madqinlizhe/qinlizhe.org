@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { markdownToHtml, slugify } from "./markdown.mjs";
 import { createHash } from "node:crypto";
 import { categories, postUrl, renderIndex, renderCategoryPage, renderPost, renderAbout, renderAll } from "./render.mjs";
+import { buildEnglish } from "./english.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
@@ -94,6 +95,9 @@ async function build() {
   await ensureCleanDist();
   await copyPublic();
   const posts = await collectPosts();
+  const englishPosts = await buildEnglish({ out: path.join(dist, "en") });
+  const translations = new Map(englishPosts.map((post) => [slugify(post.source), `/en/posts/${post.slug}.html`]));
+  for (const post of posts) post.englishPath = translations.get(post.slug);
   const version = createHash("sha256")
     .update(await fs.readFile(styleSource))
     .update(await fs.readFile(path.join(publicDir, "site.js")))

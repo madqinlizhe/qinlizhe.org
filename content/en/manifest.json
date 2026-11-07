@@ -1,0 +1,91 @@
+{
+  "status": "published",
+  "posts": [
+    {
+      "slug": "fragile-practice-booming-research",
+      "source": "虚弱的实践和火热的研究.md",
+      "category": "critique",
+      "kind": "translation",
+      "description": "Qinlizhe research is arriving remarkably smoothly. What happens when participation comes before a struggle over power?",
+      "context": "Qinlizhe (亲历者) is a locally developed name for people speaking from first-hand experience and witnessing. This essay questions its institutional use rather than treating it as a direct equivalent of survivor or service user.",
+      "sourceHash": "94d17bcdb8b8be05f7cb1da3d09125669f3afdc01e40b5a46b71e7022125a0a5"
+    },
+    {
+      "slug": "a-question-for-mad-studies",
+      "source": "从一个提问开始：Mad Studies 如何面对非英语世界？.md",
+      "category": "notes",
+      "kind": "translation",
+      "description": "I asked about the non-English-speaking world. Why did the answer return to differences within the English-speaking one?",
+      "sourceHash": "16bdcd5cd886d90b64f1fcd8539d3e1bf75cb34929ea55e0c262a1a3d41bf531"
+    },
+    {
+      "slug": "the-mad-bench",
+      "source": "舍不得离开疯板凳的人.md",
+      "category": "notes",
+      "kind": "translation",
+      "description": "My contact with psychiatry was brief. My attachment to this mad position is not. Why am I still here?",
+      "context": "Qinlizhe (亲历者), retained here in pinyin, carries first-hand experience and witnessing. It does not settle the questions of identity this essay is asking.",
+      "sourceHash": "fb4dd0cc2c80e844e5b20ea1ab77fa04af029fe41da40db59932d1ae884bc870"
+    },
+    {
+      "slug": "collaboration-and-unequal-power",
+      "source": "精神健康公益合作中的幻象与结构不对称.md",
+      "category": "critique",
+      "kind": "translation",
+      "author": "Qinlizhe Mad Studies Collective",
+      "description": "Who gets to declare a beginning, define a community, and ask for solidarity? A response from within Chinese mental-health gongyi.",
+      "context": "Gongyi (公益) is retained for a heterogeneous field of public-interest work, including mutual support, advocacy, education, and organized projects. The quoted passages below are translated from Chinese. Linked article titles are descriptive translations, not verified official English titles.",
+      "sourceHash": "13ffbb1105f262e7d9643089a1b42b8b17d48b1b024682e580b8a44773ad1d60"
+    },
+    {
+      "slug": "when-can-we-say-what-we-mean",
+      "source": "什么时候可以说自己想说的话？.md",
+      "category": "notes",
+      "kind": "translation",
+      "description": "Shared commitments can create relationships we feel forced to maintain. Where does that leave anger, dislike, and the wish to speak honestly?",
+      "sourceHash": "b5103696b076f346df1096b2b8f80f70eb4fcb9e4d422b668095e021cd17bd3a"
+    },
+    {
+      "slug": "no-more-balancing-acts",
+      "source": "不用做端水大师的时刻.md",
+      "category": "notes",
+      "kind": "translation",
+      "description": "For once, we could speak without immediately adding that there are good psychiatrists too. Then I caught myself doing it again.",
+      "sourceHash": "2db42a2afce12e1eb50207acb35b4fd4bb530fcc190a48a3a620b2622f45aecc"
+    },
+    {
+      "slug": "inside-survivor-research-and-mad-studies",
+      "source": "在幸存者研究和疯狂研究的现场.md",
+      "category": "notes",
+      "kind": "translation",
+      "description": "I went looking for people who might already have solved our problems. I found living arguments, labour boundaries, and no finished answers.",
+      "sourceHash": "7b7c82a4beb6db5bca95486c95acf7be71015edb75ba534f69731b0709ecd112"
+    },
+    {
+      "slug": "questions-we-are-living-with",
+      "source": "我们还没有答案的问题.md",
+      "category": "notes",
+      "kind": "translation",
+      "description": "Questions about representation, labour, harm, collaboration, refusal, and what it takes to act together without pretending to be one.",
+      "context": "Qinlizhe (亲历者) is retained rather than substituted with survivor, patient, or service user. The questions leave room for different positions and relationships to psychiatry.",
+      "sourceHash": "bad9b071387a8d08bf11962fccda9de9a86de2a0dee5cdfcc27c7993e69a14ec"
+    },
+    {
+      "slug": "mad-studies-challenges-and-limits",
+      "source": "Mad Studies 的挑战和局限.md",
+      "category": "critique",
+      "kind": "critical-reading",
+      "description": "Reading with Beresford and Rose while asking who gets to enter Mad Studies, speak for it, and make knowledge count.",
+      "sourceHash": "e6d91ec00165f6155602339c41845ba06ddf5a337a637fa09ad66dc455ba692e"
+    },
+    {
+      "slug": "zines-and-psychiatry",
+      "source": "用zine重新思考精神医学：一次课堂实践.md",
+      "category": "practice",
+      "kind": "english-original",
+      "author": "",
+      "description": "A short account of using eight-page zines to think about mental health, knowledge, care, and power.",
+      "sourceHash": "bc0e0e5bb7afe7229e73b054e8c0e45b1f916965d67cdac312ed2379e38fa678"
+    }
+  ]
+}

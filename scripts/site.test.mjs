@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { escapeHtml, markdownToHtml, slugify } from "./markdown.mjs";
 import { categories, renderIndex } from "./render.mjs";
+import { loadEnglishManifest } from "./english.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
@@ -94,4 +95,25 @@ test("an empty article collection still renders navigation and subscription", ()
   assert.ok(html.includes("文章会放在这里"));
   assert.ok(html.includes("探索更多"));
   assert.ok(html.includes('id="bd-email"'));
+});
+
+test("Chinese language switches match translations and fall back honestly for untranslated posts", async () => {
+  const manifest = await loadEnglishManifest();
+  const translated = new Set();
+  for (const entry of manifest.posts) {
+    const slug = slugify(entry.source);
+    translated.add(slug);
+    const html = await fs.readFile(path.join(dist, "posts", `${slug}.html`), "utf8");
+    const englishPath = `/en/posts/${entry.slug}.html`;
+    assert.ok(html.includes(`href="${englishPath}" lang="en" hreflang="en">EN</a>`));
+    assert.ok(html.includes(`hreflang="en" href="https://qinlizhe.org${englishPath}"`));
+    await fs.access(path.join(dist, englishPath));
+  }
+  const untranslated = posts.find((post) => !translated.has(decodeURIComponent(post.url).split("/").at(-1).replace(/\.html$/, "")));
+  assert.ok(untranslated);
+  const html = await fs.readFile(path.join(dist, decodeURIComponent(untranslated.url)), "utf8");
+  assert.ok(html.includes('href="/en/" lang="en" hreflang="en">EN</a>'));
+  assert.ok(!html.includes('rel="alternate" hreflang="en"'));
+  const about = await fs.readFile(path.join(dist, "about.html"), "utf8");
+  assert.ok(about.includes('href="/en/about.html" lang="en"'));
 });
